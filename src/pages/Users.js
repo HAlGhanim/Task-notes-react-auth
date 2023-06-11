@@ -1,12 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useContext } from "react";
 import { getAllUsers } from "../api/auth";
+import UserContext from "../context/UserContext";
+import { Navigate } from "react-router-dom";
 
 const User = () => {
+  const [user, setUser] = useContext(UserContext);
   const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: getAllUsers,
   });
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
   return (
     <div className="bg-gray-900 min-h-screen h-screen flex items-center justify-center absolute inset-0 z-[-1]">
       <div className="max-w-[90%] overflow-scroll w-full px-6 py-8 bg-gray-800 rounded-md shadow-md max-h-[80%]">
@@ -14,7 +20,7 @@ const User = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {users?.map((user) => (
             <div
-              key={user.id}
+              key={user._id}
               className="bg-gray-700 p-6 rounded-md flex flex-col items-center justify-center"
             >
               <img

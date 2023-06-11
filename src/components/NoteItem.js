@@ -1,7 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { deleteNote } from "../api/notes";
+import UserContext from "../context/UserContext";
 
 const NoteItem = ({ user, title, topic, _id }) => {
+  const [userr, setUserr] = useContext(UserContext);
+  const handleDelete = () => {
+    deleteNote(_id);
+  };
+  if (!userr) {
+    return <Navigate to="/login" />;
+  }
   return (
     <div className="bg-gray-800 rounded-md shadow-md p-4 mb-4 text-white min-w-[300px]">
       <div className="flex items-center justify-between mb-2">
@@ -23,6 +32,12 @@ const NoteItem = ({ user, title, topic, _id }) => {
           View Details
         </button>
       </Link>
+      <button
+        className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors ml-14"
+        onClick={handleDelete}
+      >
+        Delete
+      </button>
     </div>
   );
 };
