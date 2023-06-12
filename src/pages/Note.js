@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getNote } from "../api/notes";
+import { getNote, deleteNote } from "../api/notes";
 
 const Note = () => {
   const { noteId } = useParams();
-
   const {
     data: note,
     isLoading,
@@ -14,6 +13,13 @@ const Note = () => {
     queryKey: ["note", noteId],
     queryFn: () => getNote(noteId),
   });
+  const { mutate: dNote } = useMutation({
+    mutationFn: () => deleteNote(noteId),
+  });
+  const handleDelete = (e) => {
+    e.preventDefault();
+    dNote();
+  };
   if (!note) return <div>Not found!</div>;
   const { title, user, topic, body } = note;
 
@@ -41,6 +47,12 @@ const Note = () => {
           <h4 className="text-lg text-white font-medium mb-2">Body:</h4>
           <p className="text-white">{body}</p>
         </div>
+        <button
+          className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors ml-44"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
